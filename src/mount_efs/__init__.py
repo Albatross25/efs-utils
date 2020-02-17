@@ -1293,6 +1293,14 @@ def match_device(config, device):
     if FS_ID_RE.match(remote):
         return remote, path
 
+    ip_address = IP_RE.match(remote)	
+    if ip_address:	
+	return remote, path	
+    else :	
+	 fatal_error(	
+            'The specified IP "%s" is invalid' % remote	
+        )
+
     try:
         primary, secondaries, _ = socket.gethostbyname_ex(remote)
         hostnames = list(filter(lambda e: e is not None, [primary] + secondaries))
