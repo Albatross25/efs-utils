@@ -135,6 +135,7 @@ REQUEST_PAYLOAD = ''
 
 FS_ID_RE = re.compile('^(?P<fs_id>fs-[0-9a-f]+)$')
 EFS_FQDN_RE = re.compile(r'^(?P<fs_id>fs-[0-9a-f]+)\.efs\.(?P<region>[a-z0-9-]+)\.(?P<dns_name_suffix>[a-z0-9.]+)$')
+IP_RE = re.compile('^([01]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])\.([01]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])\.([01]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])\.([01]?[0-9]{1,2}|2[0-4][0-9]|25[0-5])$')
 AP_ID_RE = re.compile('^fsap-[0-9a-f]{17}$')
 
 ECS_TASK_METADATA_API = 'http://169.254.170.2'
@@ -1388,8 +1389,12 @@ def main():
     init_system = get_init_system()
     check_network_status(fs_id, init_system)
 
-    dns_name = get_dns_name(config, fs_id)
-
+    	
+    if FS_ID_RE.match(fs_id):
+	   dns_name = get_dns_name(config, fs_id)
+	
+    else:
+	   dns_name = fs_id
     if 'tls' in options:
         mount_tls(config, init_system, dns_name, path, fs_id, mountpoint, options)
     else:
